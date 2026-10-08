@@ -18,7 +18,7 @@ Goal: Linux and macOS drivers for the old (Ploytec-based) Dynacord CMS 600-3, bu
 
 ## Fork
 
-- [ ] Decide what to do with the existing `dominics/snd-xonedb4` fork (unrelated history to current upstream)
+- [x] Rename fork `dominics/snd-xonedb4` to [`dominics/Ozzy`](https://github.com/dominics/Ozzy) and reset `main` to upstream. The 2024 work is on `dynacord-cms`, and the old `main` is on `archive/snd-xonedb4-main`.
 
 ## Drivers
 
