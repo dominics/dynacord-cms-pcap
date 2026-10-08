@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Run a local PowerShell script on sword over SSH: sword-ps script.ps1
+set -euo pipefail
+enc=$(iconv -f UTF-8 -t UTF-16LE "$1" | base64)
+ssh -o LogLevel=ERROR -o ConnectTimeout=8 -p 11122 Dominic@192.168.1.20 "powershell -NoProfile -EncodedCommand $enc" 2>&1 \
+  | grep -v -e 'post-quantum' -e 'store now' -e 'pq.html' -e '#< CLIXML' -e '^<Objs' || true

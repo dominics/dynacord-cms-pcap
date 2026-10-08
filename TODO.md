@@ -6,15 +6,16 @@ Goal: Linux and macOS drivers for the old (Ploytec-based) Dynacord CMS 600-3, bu
 
 - [x] Decode descriptors and the control sequence in `dynacord.pcap`
 - [x] Compare input/output stream framing against Ozzy's Xone implementation
-- [ ] Capture known test signals on sword (Windows driver 2.9.95.2 + USBPcap are already installed)
-  - [ ] Per-channel impulses or ramps on output, one channel at a time, at 96 kHz
-  - [ ] The same at 44.1 / 48 kHz, plus a rate change while running
-  - [ ] Stream start/stop, and plug-in from cold (SET_INTERFACE, init order)
+- [x] Capture known test signals on sword (`tools/sword/sword-capture`)
+  - [x] Walking bit on output at 96 kHz
+  - [x] Counter pattern at 44.1 / 48 / 96 kHz (also captures the rate-change sequence)
+  - [ ] Plug-in from cold
   - [ ] A known signal into the mixer's inputs, to confirm the input channel mapping
-- [ ] Work out the output encoding (12 bytes/frame) and channel count
-- [ ] Decode the feedback packet format on 0x81
+  - [ ] Ask ASIO which other sample rates it supports (88.2 kHz?)
+- [x] Work out the output encoding: plain S24_3LE, 4 channels
+- [x] Decode the feedback packet format on 0x81: sliding window of per-ms frame counts
 - [ ] Identify `0xce` at input bytes 0x1b / 0x3b
-- [ ] Find out whether 0x83 / 0x04 are MIDI
+- [ ] Capture MIDI in/out and "SystemCtrl" traffic on 0x83 / 0x04
 - [ ] Find out whether the CMS can route USB playback back into USB record (a loopback for automated driver tests); otherwise patch a cable from an output to a channel input
 
 ## Fork
