@@ -31,7 +31,8 @@ Goal: Linux and macOS drivers for the old (Ploytec-based) Dynacord CMS 600-3, bu
   - [x] 5 min per rate on all channels: underruns=0, iso_err=0, no halts (with 32 OUT transfers, see below)
   - [x] Ctrl-C exits cleanly and a re-run works
   - [ ] Pulling the cable exits with the "unplugged?" message
-  - [ ] Listen: a tone on each channel comes out of the expected USB return (needs speakers on the mixer)
+  - [x] Listen: a tone on each channel comes out of the USB return, clean and stable. Channels 1 and 3 are left, 2 and 4 are right.
+  - [ ] Find out whether the mixer can route USB 3-4 separately from 1-2 (both pairs land in the same stereo return on the headphone monitor)
 - Finding: **the firmware halts all streaming (feedback and PCM in included) when its OUT buffer runs dry**, and the host sees no error. macOS libusb completions stall for 10-36 ms at a time. 4 OUT transfers (12 ms) halted within seconds, and 16 (48 ms) halted twice in 15 min. 32 (96 ms) ran 15 min clean. The stalls seen right before the 16-transfer halts were never longer than 48 ms, so that part isn't fully explained. `ploytec-play` now exits when feedback goes silent for 1 s.
 - [ ] A low-latency driver can't use a 96 ms queue: find where the stalls come from (libusb's darwin completion thread / IOKit) or stream from a higher-priority path
 - [ ] Deferred review minors: stale replay after an iso ERROR; count empty/short feedback packets; check the 'I' reply length; check allocations

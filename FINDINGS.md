@@ -76,6 +76,8 @@ When ASIO opens a stream, the Windows driver deconfigures and re-enumerates the 
 After the final rate change, the number of short packets exactly matches the number of feedback readings below nominal: 18 short packets and 18 readings of 47 at 48 kHz, 31 and 31 readings of 95 at 96 kHz. The host sends one frame fewer each time the device reports a short millisecond. Both rates imply the mixer's clock runs about 90 ppm slow.
 
 - `wMaxPacketSize` 156 = 13 frames, which leaves headroom for the feedback loop to ask for one extra frame at 96 kHz.
+- **The firmware halts all streaming when its OUT buffer runs dry.** Feedback packets go empty and bulk PCM in stops, while EP0 keeps answering. The host gets no error, because iso OUT has no handshake. Re-running the init sequence recovers it. On macOS, libusb needed 32 URBs (96 ms) queued to survive completion stalls of 10-36 ms; 4 and 16 both halted.
+- Listening test on the headphone monitor (2026-10-09, `ploytec-play` at 48 kHz): channels 1 and 3 come out on the left, 2 and 4 on the right, all clean and stable. So both output pairs reach the same stereo return.
 
 ## Feedback: iso 0x81
 
