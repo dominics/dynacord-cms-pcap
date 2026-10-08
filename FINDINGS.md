@@ -20,6 +20,8 @@ Reproduce with the tools in `tools/`.
 - **Input (device to host) uses Ozzy's Xone frame format** (bulk, 64-byte bit-sliced frames). Only bits 0-1 of each slice byte carry data (4 channels); bits 2-7 read as 1.
 - **The CMS has USB MIDI** (Windows shows "DYNACORD USB-MIDI" and "DYNACORD SystemCtrl"), presumably on bulk 0x83 IN / 0x04 OUT. Not yet examined.
 
+The manufacturer's spec sheet agrees: "4-in/4-out USB 2.0 interface up to 96 kHz" and "MIDI interface for FX control". The mixer also has physical MIDI in/out DIN sockets. Windows shows two USB-MIDI ports and a SystemCtrl port. A plausible split: one port bridges the DIN sockets, one controls the two internal FX processors (100 factory + 20 user presets), and SystemCtrl does something else. Unconfirmed.
+
 Ozzy today has no isochronous transport and no feedback handling, so output is the main new work. Input looks like a small variation on what Ozzy already does.
 
 ## Descriptors
