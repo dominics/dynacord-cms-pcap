@@ -94,7 +94,7 @@ After the final rate change, the number of short packets exactly matches the num
 - Bytes 0x18-0x1f and 0x38-0x3f are zero except bytes **0x1b and 0x3b, always `0xce`**. Meaning unknown.
 - URB size scales with rate, always 3 ms worth: 8192 bytes (128 frames) at 44.1 kHz, 9216 (144) at 48 kHz, 18432 (288) at 96 kHz.
 - With nothing plugged in, the input is a noise floor around 0 / -1.
-- **The 4 USB inputs are mixer buses, not physical inputs** ([owner's manual](https://products.dynacord.com/download/979323), items 33, 36, 48-49 and section 4.6, confirmed on hardware 2026-10-09 with `ploytec-play`'s input meter):
+- **The 4 USB inputs are mixer buses, not physical inputs** ([owner's manual](docs/cms600-3-owners-manual.pdf), items 33, 36, 48-49 and section 4.6, confirmed on hardware 2026-10-09 with `ploytec-play`'s input meter):
 
 | USB in | Signal | Level set by |
 |---|---|---|

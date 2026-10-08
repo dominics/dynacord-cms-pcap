@@ -11,3 +11,7 @@ The [Ploytec REVIVAL](https://www.ploytec.com/revival/) firmware does not yet su
 The capture is provided as a .pcap file, captured using USBPCap, on Windows (where there is still a working driver).
 
 The Dynacord CMS 600-3 uses the USB Vendor ID of `0x0562` and Product ID of `0x03eb`
+
+## Owner's manual
+
+[docs/cms600-3-owners-manual.pdf](docs/cms600-3-owners-manual.pdf) is Dynacord's English/German owner's manual for the CMS 600-3 (80 pages, 2017), kept here in case it disappears from Dynacord's site. It was downloaded on 2026-10-09 from https://products.dynacord.com/download/979323 (sha256 `c01dd1ce696e1359b857cf9f771a9d9cbb3f73a660982597d8d8254857654ac3`). Section 4 covers the USB "DIGITAL AUDIO INTERFACE" and its routing.
