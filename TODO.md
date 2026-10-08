@@ -27,11 +27,13 @@ Goal: Linux and macOS drivers for the old (Ploytec-based) Dynacord CMS 600-3, bu
 - [x] Spec and plan for a userspace libusb output prototype
 - [x] `ploytec-play` written on [dominics/Ozzy `dynacord-cms600`](https://github.com/dominics/Ozzy/tree/dynacord-cms600) (`userspace/ploytec-play/`): tone/WAV to the 4 USB outputs, feedback-paced iso output. Unit tests pass, and its packet pacing matches the Windows driver's captures frame for frame.
 - [ ] Hardware run on dominic-macbook (mixer moved from sword, power-cycled with the cable in):
-  - [ ] `ploytec-play --rate R --seconds 5` at 44100 / 48000 / 96000 (init and streaming start)
-  - [ ] Tone on each channel, then 5 min per rate on all channels: underruns=0, iso_err=0
-  - [ ] Ctrl-C exits cleanly and a re-run works; pulling the cable exits with the "unplugged?" message
-  - [ ] One listen: 440 Hz on channel 1 comes out of the USB return
-  - [ ] If nothing streams: try `libusb_reset_device` before claiming (Windows re-enumerates the device first)
+  - [x] `ploytec-play --rate R --seconds 5` at 44100 / 48000 / 96000 (init and streaming start). Enumerates and streams without any reset or re-enumeration.
+  - [x] 5 min per rate on all channels: underruns=0, iso_err=0, no halts (with 32 OUT transfers, see below)
+  - [x] Ctrl-C exits cleanly and a re-run works
+  - [ ] Pulling the cable exits with the "unplugged?" message
+  - [ ] Listen: a tone on each channel comes out of the expected USB return (needs speakers on the mixer)
+- Finding: **the firmware halts all streaming (feedback and PCM in included) when its OUT buffer runs dry**, and the host sees no error. macOS libusb completions stall for 10-36 ms at a time. 4 OUT transfers (12 ms) halted within seconds, and 16 (48 ms) halted twice in 15 min. 32 (96 ms) ran 15 min clean. The stalls seen right before the 16-transfer halts were never longer than 48 ms, so that part isn't fully explained. `ploytec-play` now exits when feedback goes silent for 1 s.
+- [ ] A low-latency driver can't use a 96 ms queue: find where the stalls come from (libusb's darwin completion thread / IOKit) or stream from a higher-priority path
 - [ ] Deferred review minors: stale replay after an iso ERROR; count empty/short feedback packets; check the 'I' reply length; check allocations
 - [ ] Port output to Ozzy's Linux ALSA module
 - [ ] Input (0x86), macOS HAL backend, MIDI / SystemCtrl
