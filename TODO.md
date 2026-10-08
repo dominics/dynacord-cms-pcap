@@ -10,13 +10,13 @@ Goal: Linux and macOS drivers for the old (Ploytec-based) Dynacord CMS 600-3, bu
   - [x] Walking bit on output at 96 kHz
   - [x] Counter pattern at 44.1 / 48 / 96 kHz (also captures the rate-change sequence)
   - [ ] Plug-in from cold
-  - [ ] A known signal into the mixer's inputs, to confirm the input channel mapping
+  - [x] A known signal into the mixer's inputs, to confirm the input channel mapping. Done on dominic-macbook with `ploytec-play`'s input meter instead: USB in 1-2 = master L/R, 3 = AUX, 4 = MON (see FINDINGS)
   - [ ] Ask ASIO which other sample rates it supports (88.2 kHz?)
 - [x] Work out the output encoding: plain S24_3LE, 4 channels
 - [x] Decode the feedback packet format on 0x81: sliding window of per-ms frame counts
 - [ ] Identify `0xce` at input bytes 0x1b / 0x3b
 - [ ] Capture MIDI in/out and "SystemCtrl" traffic on 0x83 / 0x04
-- [ ] Find out whether the CMS can route USB playback back into USB record (a loopback for automated driver tests); otherwise patch a cable from an output to a channel input
+- [x] Find out whether the CMS can route USB playback back into USB record (a loopback for automated driver tests): yes, USB out -> stereo inputs 5-6 / 7-8 -> master -> USB in 1-2
 
 ## Fork
 
@@ -32,8 +32,9 @@ Goal: Linux and macOS drivers for the old (Ploytec-based) Dynacord CMS 600-3, bu
   - [x] Ctrl-C exits cleanly and a re-run works
   - [x] Pulling the cable exits with the "unplugged?" message, and shuts down without stuck transfers
   - [x] Listen: a tone on each channel comes out of the USB return, clean and stable. Channels 1 and 3 are left, 2 and 4 are right.
-  - [ ] Find out whether the mixer can route USB 3-4 separately from 1-2 (both pairs land in the same stereo return on the headphone monitor)
+  - [x] Find out whether the mixer can route USB 3-4 separately from 1-2: yes, they arrive on their own channel strips (stereo inputs 5-6 and 7-8), which is why both pairs reached the same master/headphone mix
 - Finding: **the firmware halts all streaming (feedback and PCM in included) when its OUT buffer runs dry**, and the host sees no error. macOS libusb completions stall for 10-36 ms at a time. 4 OUT transfers (12 ms) halted within seconds, and 16 (48 ms) halted twice in 15 min. 32 (96 ms) ran 15 min clean. The stalls seen right before the 16-transfer halts were never longer than 48 ms, so that part isn't fully explained. `ploytec-play` now exits when feedback goes silent for 1 s.
+- [x] Input meter in `ploytec-play` ([2c5a67d](https://github.com/dominics/Ozzy/commit/2c5a67d)): decodes bulk IN with Ozzy's `ploytec_decode_frame()` and prints per-second peaks in dBFS; no misaligned frames on hardware
 - [ ] A low-latency driver can't use a 96 ms queue: find where the stalls come from (libusb's darwin completion thread / IOKit) or stream from a higher-priority path
 - [ ] Deferred review minors: stale replay after an iso ERROR; count empty/short feedback packets; check the 'I' reply length; check allocations
 - [ ] Port output to Ozzy's Linux ALSA module

@@ -93,7 +93,17 @@ After the final rate change, the number of short packets exactly matches the num
 - Only **bits 0 and 1** of each slice byte carry data; bits 2-7 always read as 1. That gives 2 channels per half, 4 in total, which fits ASIO's 4 inputs. Ozzy's `ploytec_decode_frame()` already reads bit 0 of each half as channels 1 and 2 and bit 1 as channels 3 and 4, so its channels 1-4 should be correct and channels 5-8 will read as -1.
 - Bytes 0x18-0x1f and 0x38-0x3f are zero except bytes **0x1b and 0x3b, always `0xce`**. Meaning unknown.
 - URB size scales with rate, always 3 ms worth: 8192 bytes (128 frames) at 44.1 kHz, 9216 (144) at 48 kHz, 18432 (288) at 96 kHz.
-- With nothing plugged in, the input is a noise floor around 0 / -1. **The mapping from physical inputs to the 4 channels is not yet confirmed.**
+- With nothing plugged in, the input is a noise floor around 0 / -1.
+- **The 4 USB inputs are mixer buses, not physical inputs** ([owner's manual](https://products.dynacord.com/download/979323), items 33, 36, 48-49 and section 4.6, confirmed on hardware 2026-10-09 with `ploytec-play`'s input meter):
+
+| USB in | Signal | Level set by |
+|---|---|---|
+| 1-2 | Master L/R, pre master fader (same as the REC SEND RCA outputs) | REC SEND & USB OUT |
+| 3 | AUX bus | AUX fader |
+| 4 | MON bus | MON fader |
+
+  A mic on channel 1, with the output silent, moved all 4 inputs together: in 1 and 2 equal (centre pan), in 4 1.5 dB lower and in 3 14 dB lower, matching the fader settings. What gets recorded on 3 and 4 is chosen with the channel AUX / MON sends, so a driver just exposes 4 inputs.
+- **USB playback loops back into USB record.** USB out 1-2 feeds stereo input 5-6 and out 3-4 feeds stereo input 7-8, which reach the master and so USB in 1-2. A tone on out 1 only read -34 dBFS on in 1 and -51 on in 2. This gives automated driver tests a loopback without patching a cable.
 
 ## Windows driver
 
@@ -102,7 +112,7 @@ After the final rate change, the number of short packets exactly matches the num
 
 ## Open questions
 
-1. How do the physical inputs map to the 4 USB input channels? (Needs a known signal, or a loopback.)
+1. ~~How do the physical inputs map to the 4 USB input channels?~~ Answered above: master L/R, AUX, MON.
 2. What is `0xce` at input bytes 0x1b / 0x3b?
 3. MIDI and "SystemCtrl" on 0x83 / 0x04: format, and what SystemCtrl controls.
 4. Does the device need the full 5-call SET_CUR dance and the re-enumeration, or is less enough? (Ozzy found 2 calls suffice for the Xone.)
