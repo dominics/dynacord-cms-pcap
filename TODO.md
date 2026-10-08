@@ -15,6 +15,7 @@ Goal: Linux and macOS drivers for the old (Ploytec-based) Dynacord CMS 600-3, bu
 - [ ] Decode the feedback packet format on 0x81
 - [ ] Identify `0xce` at input bytes 0x1b / 0x3b
 - [ ] Find out whether 0x83 / 0x04 are MIDI
+- [ ] Find out whether the CMS can route USB playback back into USB record (a loopback for automated driver tests); otherwise patch a cable from an output to a channel input
 
 ## Fork
 
