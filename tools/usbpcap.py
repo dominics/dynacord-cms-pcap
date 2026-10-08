@@ -1,4 +1,5 @@
 """Minimal USBPcap (LINKTYPE_USBPCAP) reader for poking at the Dynacord capture."""
+import lzma
 import struct
 import sys
 from dataclasses import dataclass, field
@@ -22,7 +23,8 @@ class Urb:
 
 
 def read(path):
-    with open(path, "rb") as f:
+    opener = lzma.open if path.endswith(".xz") else open
+    with opener(path, "rb") as f:
         magic = f.read(24)
         n = 0
         while True:
